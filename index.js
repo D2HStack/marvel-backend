@@ -17,7 +17,7 @@ app.get("/", (req, res) => {
   res.json("Hello ! Welcome to Marvel !");
 });
 
-app.get("/characters/all", async (req, res) => {
+app.get("/characters/", async (req, res) => {
   try {
     const { offset, limit } = req.fields;
     // console.log(limit);
