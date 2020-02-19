@@ -11,6 +11,10 @@ const app = express();
 app.use(expressFormidable());
 app.use(cors());
 
+app.get("/", (req, res) => {
+  res.json("Hello ! Welcome to Marvel !");
+});
+
 app.get("/characters/all", async (req, res) => {
   try {
     const { offset, limit } = req.fields;
