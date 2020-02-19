@@ -23,12 +23,10 @@ app.get("/characters/all", async (req, res) => {
     const response = await request(
       "http://gateway.marvel.com/v1/public/characters",
       "get",
-      0,
-      100
+      offset,
+      limit
     );
-    const response100 = response.data.data.results;
-    // console.log(response100.length);
-    res.json("OK");
+    res.json(response.data.data.results);
   } catch (error) {
     res.status(error.code).json({ error: { message: error.status } });
   }
