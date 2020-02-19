@@ -17,10 +17,10 @@ app.get("/", (req, res) => {
   res.json("Hello ! Welcome to Marvel !");
 });
 
-app.get("/characters/", async (req, res) => {
+app.post("/characters/", async (req, res) => {
   try {
     const { offset, limit } = req.fields;
-    // console.log(limit);
+    console.log(limit);
     // request(url, method, offset, limit)
     const response = await request(
       "http://gateway.marvel.com/v1/public/characters",
