@@ -2,6 +2,8 @@
 const express = require("express");
 const expressFormidable = require("express-formidable");
 const cors = require("cors");
+const dotenv = require("dotenv");
+require("dotenv").config();
 
 // request utility
 const request = require("./utility/request");
