@@ -28,7 +28,7 @@ app.get("/characters/all", async (req, res) => {
       offset,
       limit
     );
-    res.json(response.data.data.results);
+    res.json(response.data.data);
   } catch (error) {
     res.status(error.code).json({ error: { message: error.status } });
   }
