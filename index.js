@@ -114,19 +114,14 @@ app.get("/characters/search/:keyword", async (req, res) => {
   try {
     // console.log(req);
     const { keyword } = req.params;
+    const { offset, limit } = req.query;
+    // console.log(offset, limit);
     const keywordLC = keyword.toLowerCase();
     // console.log("keyword", keyword);
     // maximum size of a request is 100
-    const limit = 100;
 
-    const promiseArray = [];
-    const result = [];
-    let total = 0;
-
-    // to get the number of total characters and compute number of loops
-    let offset = 0;
     const { ts, hash } = hashFunction();
-    await axios({
+    const response = await axios({
       url: "http://gateway.marvel.com/v1/public/characters",
       method: "get",
       params: {
@@ -134,57 +129,11 @@ app.get("/characters/search/:keyword", async (req, res) => {
         ts,
         hash,
         offset,
-        limit
+        limit,
+        nameStartsWith: keywordLC
       }
-    }).then(response => {
-      total = response.data.data.total;
-      // const extract = response.data.data.results;
-      // extract.map(character => {
-      //   const nameLC = character.name.toLowerCase();
-      //   if (nameLC.includes(keywordLC)) {
-      //     result.push(character);
-      //   }
-      // });
     });
-
-    console.log("length", result.length);
-
-    const numRequests = Math.floor(total / limit);
-    // console.log("pages", numRequests);
-
-    // process remainder of characters
-    // to replace 5 by numRequests
-    for (let i = 1; i <= numRequests; i++) {
-      console.log(`Loop number ${i}`);
-      offset = (i - 1) * limit;
-      const { ts, hash } = hashFunction();
-
-      promiseArray.push(
-        await axios({
-          url: "http://gateway.marvel.com/v1/public/characters",
-          method: "get",
-          params: {
-            apikey: process.env.MARVEL_PUBLIC,
-            ts,
-            hash,
-            offset,
-            limit
-          }
-        }).then(response => {
-          const extract = response.data.data.results;
-          extract.map(character => {
-            const nameLC = character.name.toLowerCase();
-            if (nameLC.includes(keywordLC)) {
-              result.push(character);
-            }
-          });
-        })
-      );
-      await Promise.all(promiseArray);
-      console.log("length", result.length);
-    }
-
-    res.json(result);
+    res.json(response.data.data);
   } catch (error) {
     res.status(error.code).json({ error: { message: error.status } });
   }
