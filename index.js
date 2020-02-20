@@ -94,6 +94,32 @@ app.get("/characters/:id/comics", async (req, res) => {
   }
 });
 
+// request characters with offset and limit
+app.get("/comics/", async (req, res) => {
+  try {
+    const { offset, limit } = req.query;
+    const ts = uid2(64);
+    const hash = md5(
+      ts + process.env.MARVEL_SECRET + process.env.MARVEL_PUBLIC
+    );
+
+    const response = await axios({
+      url: "http://gateway.marvel.com/v1/public/comics",
+      method: "get",
+      params: {
+        apikey: process.env.MARVEL_PUBLIC,
+        ts,
+        hash,
+        offset,
+        limit
+      }
+    });
+    res.json(response.data.data);
+  } catch (error) {
+    res.status(error.code).json({ error: { message: error.status } });
+  }
+});
+
 const port = process.env.PORT || 4000;
 app.listen(port, () => {
   console.log("Server has started ! ");
