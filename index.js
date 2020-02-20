@@ -139,6 +139,36 @@ app.get("/characters/search/:keyword", async (req, res) => {
   }
 });
 
+// search comics
+app.get("/comics/search/:keyword", async (req, res) => {
+  try {
+    // console.log(req);
+    const { keyword } = req.params;
+    const { offset, limit } = req.query;
+    // console.log(offset, limit);
+    const keywordLC = keyword.toLowerCase();
+    // console.log("keyword", keyword);
+    // maximum size of a request is 100
+
+    const { ts, hash } = hashFunction();
+    const response = await axios({
+      url: "http://gateway.marvel.com/v1/public/characters",
+      method: "get",
+      params: {
+        apikey: process.env.MARVEL_PUBLIC,
+        ts,
+        hash,
+        offset,
+        limit,
+        titleStartsWith: keywordLC
+      }
+    });
+    res.json(response.data.data);
+  } catch (error) {
+    res.status(error.code).json({ error: { message: error.status } });
+  }
+});
+
 const port = process.env.PORT || 4000;
 app.listen(port, () => {
   console.log("Server has started ! ");
