@@ -152,7 +152,7 @@ app.get("/comics/search/:keyword", async (req, res) => {
 
     const { ts, hash } = hashFunction();
     const response = await axios({
-      url: "http://gateway.marvel.com/v1/public/characters",
+      url: "http://gateway.marvel.com/v1/public/comics",
       method: "get",
       params: {
         apikey: process.env.MARVEL_PUBLIC,
